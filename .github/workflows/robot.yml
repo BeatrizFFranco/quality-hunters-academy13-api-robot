@@ -1,36 +1,35 @@
-name: Robot Framework CI
-
-on:
-  push:
-    branches: [ main, develop ]  # Dispara ao fazer push nestas branches
-  pull_request:
-    branches: [ main ]          # Dispara em PRs para a branch main
+name: Robot Framework Tests (Edge)
+on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest       # Sistema operacional da máquina virtual
+    runs-on: ubuntu-latest  # Ou windows-latest, se preferir
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  # Baixa o código do repositório
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'   # Versão do Python
+          python-version: "3.12"  # Altere para a versão que você usa
 
       - name: Install dependencies
         run: |
           pip install robotframework
-          pip install robotframework-seleniumlibrary  # Se usar Selenium
-          # Outras bibliotecas (ex: requests, Appium, etc.)
+          pip install robotframework-seleniumlibrary
+          pip install webdriver-manager
 
-      - name: Run Robot Framework tests
-        run: robot --outputdir results tests/  # Executa testes na pasta 'tests/'
+      - name: Install Microsoft Edge and WebDriver
+        run: |
+          # Instala o Microsoft Edge (Linux)
+          curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+          sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
+          sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
+          sudo apt update
+          sudo apt install -y microsoft-edge-stable
+          # Instala o EdgeDriver via webdriver-manager
+          python -m webdriver_manager microsoft edge --install
 
-      - name: Upload results (opcional)
-        uses: actions/upload-artifact@v3
-        if: always()  # Faz upload mesmo se os testes falharem
-        with:
-          name: robot-reports
-          path: results/  # Pasta com os relatórios (outputdir)
+      - name: Run Robot Tests
+        run: |
+          robot --variable BROWSER:Edge tests/
