@@ -15,24 +15,40 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install robotframework selenium==4.9.0 robotframework-seleniumlibrary
+          pip install robotframework selenium>=4.10.0 robotframework-seleniumlibrary
 
       - name: Install Microsoft Edge and WebDriver
         run: |
-          # Instala o Edge
+          # 1. Instala o Microsoft Edge
+          echo "Instalando Microsoft Edge..."
           curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
           sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
           sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
           sudo apt update
           sudo apt install -y microsoft-edge-stable
-          
-          # Instala o WebDriver
-          EDGE_VERSION=$(microsoft-edge --version | cut -d' ' -f3)
-          DRIVER_VERSION=${EDGE_VERSION%.*}
-          wget https://msedgedriver.azureedge.net/$DRIVER_VERSION/edgedriver_linux64.zip
-          unzip edgedriver_linux64.zip
+
+          # 2. Obtém a versão exata do Edge instalado
+          echo "Obtendo versão do Edge..."
+          EDGE_VERSION=$(microsoft-edge --version | awk '{print $3}')
+          echo "Versão do Edge detectada: $EDGE_VERSION"
+
+          # 3. Obtém a versão compatível do WebDriver
+          echo "Buscando versão compatível do WebDriver..."
+          DRIVER_VERSION=$(curl -s "https://msedgedriver.azureedge.net/LATEST_RELEASE_${EDGE_VERSION%.*}")
+          echo "Versão do WebDriver a ser instalada: $DRIVER_VERSION"
+
+          # 4. Baixa e instala o WebDriver
+          echo "Baixando WebDriver..."
+          wget -q "https://msedgedriver.azureedge.net/$DRIVER_VERSION/edgedriver_linux64.zip"
+          unzip -o edgedriver_linux64.zip
           sudo mv msedgedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/msedgedriver
+          rm edgedriver_linux64.zip
+
+          # 5. Verifica a instalação
+          echo "Verificando instalações..."
+          microsoft-edge --version
+          msedgedriver --version
 
       - name: Run Robot Tests
         run: |
