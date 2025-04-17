@@ -19,36 +19,35 @@ jobs:
 
       - name: Install Microsoft Edge and WebDriver
         run: |
-          # 1. Instala o Microsoft Edge
-          echo "Instalando Microsoft Edge..."
-          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-          sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
-          sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
-          sudo apt update
-          sudo apt install -y microsoft-edge-stable
-
-          # 2. Obtém a versão exata do Edge instalado
-          echo "Obtendo versão do Edge..."
-          EDGE_VERSION=$(microsoft-edge --version | awk '{print $3}')
-          echo "Versão do Edge detectada: $EDGE_VERSION"
-
-          # 3. Obtém a versão compatível do WebDriver
-          echo "Buscando versão compatível do WebDriver..."
-          DRIVER_VERSION=$(curl -s "https://msedgedriver.azureedge.net/LATEST_RELEASE_${EDGE_VERSION%.*}")
-          echo "Versão do WebDriver a ser instalada: $DRIVER_VERSION"
-
-          # 4. Baixa e instala o WebDriver
-          echo "Baixando WebDriver..."
-          wget -q "https://msedgedriver.azureedge.net/$DRIVER_VERSION/edgedriver_linux64.zip"
-          unzip -o edgedriver_linux64.zip
-          sudo mv msedgedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/msedgedriver
-          rm edgedriver_linux64.zip
-
-          # 5. Verifica a instalação
-          echo "Verificando instalações..."
-          microsoft-edge --version
-          msedgedriver --version
+            # 1. Instala o Microsoft Edge
+            echo "Instalando Microsoft Edge..."
+            curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+            sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
+            sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
+            sudo apt update
+            sudo apt install -y microsoft-edge-stable
+        
+            # 2. Obtém a versão principal do Edge (ex: 135 para 135.0.3179.85)
+            EDGE_MAJOR_VERSION=$(microsoft-edge --version | awk -F. '{print $1}' | awk '{print $3}')
+            echo "Versão principal do Edge: $EDGE_MAJOR_VERSION"
+        
+            # 3. Tenta obter a versão estável mais recente do WebDriver
+            echo "Buscando versão estável do WebDriver..."
+            DRIVER_VERSION=$(curl -s "https://msedgedriver.azureedge.net/LATEST_STABLE_$EDGE_MAJOR_VERSION" || curl -s "https://msedgedriver.azureedge.net/LATEST_RELEASE_$EDGE_MAJOR_VERSION")
+            echo "Versão do WebDriver: $DRIVER_VERSION"
+        
+            # 4. Baixa e instala o WebDriver
+            echo "Baixando WebDriver..."
+            wget -q "https://msedgedriver.azureedge.net/$DRIVER_VERSION/edgedriver_linux64.zip"
+            unzip -o edgedriver_linux64.zip
+            sudo mv msedgedriver /usr/local/bin/
+            sudo chmod +x /usr/local/bin/msedgeddriver
+            rm edgedriver_linux64.zip
+        
+            # 5. Verifica a instalação
+            echo "Verificando instalações..."
+            microsoft-edge --version
+            msedgedriver --version
 
       - name: Run Robot Tests
         run: |
