@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Ou windows-latest, se preferir
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -11,25 +11,27 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"  # Altere para a versão que você usa
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          pip install robotframework
-          pip install robotframework-seleniumlibrary
-          pip install webdriver-manager
+          pip install robotframework robotframework-seleniumlibrary webdriver-manager
 
       - name: Install Microsoft Edge and WebDriver
         run: |
-          # Instala o Microsoft Edge (Linux)
-          curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
           sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
           sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
           sudo apt update
           sudo apt install -y microsoft-edge-stable
-          # Instala o EdgeDriver via webdriver-manager
           python -m webdriver_manager microsoft edge --install
 
       - name: Run Robot Tests
         run: |
-          robot --variable BROWSER:Edge tests/
+          robot --variable BROWSER:Edge --outputdir results/ tests/
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4  # Versão corrigida para v4
+        with:
+          name: robot-reports
+          path: results/
