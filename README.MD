@@ -12,40 +12,37 @@ Este projeto consiste em uma **coleção de testes de API** desenvolvidos utiliz
 - **Ferramenta utilizada**: O **Robot Framework** é utilizado para a execução dos testes.
 - **Linguagem de teste**: Os testes são escritos em **JavaScript Syntax** e **Python**.
 - **Integração contínua (CI/CD)**: Os testes são executados em uma pipeline de CI/CD utilizando **GitHub Actions**.
-- **Relatórios**: Os resultados das execuções dos testes são disponibilizados no **GitHub Pages**, através do link: https://jvluzc.github.io/ronbugado-academy12.2-api-postman/report.html 📊
+- **Relatórios**: Os resultados das execuções dos testes são disponibilizados no **GitHub Pages**, através do link: 
 
 ## 🔧 Pré-requisitos
 
 Antes de executar os testes, certifique-se de que você tem os seguintes requisitos instalados:
 
 - **Python**: Para instalar e executar as dependências do Robot Framework. 🐍
-- **Robot Framework** e **SeleniumLibrary**: Para executar a automação de testes. 🖥️
+- **Robot Framework**: Para executar a automação de testes. 🖥️
 - **Git**: Para clonar este repositório. 💻
 
 ## ⚙️ Dependências do projeto:
 
 - **Robot Framework**
-- **SeleniumLibrary**
 
 ## 📝 Como Executar os Testes
 
 1. **Clone o repositório abaixo** para o seu ambiente local:
+$ https://github.com/BeatrizFFranco/quality-hunters-academy13-api-robot
 
-   https://github.com/BeatrizFFRanco/qualityHunters-academy13-api-robot.git
+2. Abra o VsCode dentro da pasta clonada
 
-2. Abra o Postman.
-3. Importe a coleção de testes:
-- Clique no botão "Import" no canto superior esquerdo do Postman.
-- Selecione o arquivo ronbugado-collecition-ci.json dentro da pasta do repositório clonado.
-4. Importe as variáveis de ambiente:
-- Clique no botão "Import" novamente.
-- Selecione o arquivo ronbugado-environments-ci.json dentro da pasta do repositório clonado.
-5. Selecione a variável de ambiente importada na barra lateral do Postman.
-6. Execute a coleção de testes:
-- Clique no botão "Runner" no canto superior esquerdo do Postman.
-- Selecione a coleção "ronbugado-collecition-ci".
-- Clique em "Start Run" e aguarde a execução dos testes.
-7. Visualize os resultados dos testes na aba "Test Results" do Postman.
+3. Abra o arquivo 
+Cenarios_Diretoria.robot
+
+4. Abra o terminal do VsCode
+
+5. Ative o ambiente virtual no terminal
+source myrobotenv/bin/activate
+
+6. Escreva o comando abaixo para rodar os testes
+robot -d log .
 
 
 ## 👥 Squad
