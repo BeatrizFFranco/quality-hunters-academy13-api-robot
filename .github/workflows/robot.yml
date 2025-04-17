@@ -55,6 +55,40 @@ jobs:
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
-        with:
+        with: 
           name: robot-reports
           path: results/
+
+  report:
+        name: Report Tests 🌐
+        runs-on: ubuntu-24.04
+        if: always()
+        needs: 
+          - tests
+    
+        permissions:
+          contents: read
+          pages: write
+          id-token: write
+        environment:
+          name: github-pages
+          url: https://clestonv.github.io/robot-basic-tqa13/report.html
+
+        steps:
+          - name: Configuração do Site do Resultado do Testes
+            uses: actions/configure-pages@v4
+
+          - name: Download Resultado dos Testes
+            uses: actions/download-artifact@v4
+            with:
+              name: resultado-testes
+              path: results/
+
+          - name: Upload dos Resultados
+            uses: actions/upload-pages-artifact@v3
+            with:
+              path: results/
+
+          - name: Subindo Pagina de Resultados dos Testes 🚀
+            id: deployment
+            uses: actions/deploy-pages@v4
