@@ -1,31 +1,36 @@
-name: Robot Testes
+name: Robot Framework CI
 
-on: [workflow_dispatch]
+on:
+  push:
+    branches: [ main, develop ]  # Dispara ao fazer push nestas branches
+  pull_request:
+    branches: [ main ]          # Dispara em PRs para a branch main
 
 jobs:
-    tests:
-        name: Testes Robot Framework
-        runs-on: ubuntu-24.04
+  test:
+    runs-on: ubuntu-latest       # Sistema operacional da máquina virtual
 
-        steps:
-          - name: Clonando o projeto para a maquina virtual
-            uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4  # Baixa o código do repositório
 
-          - name: Configurando o Python na maquina virtual
-            uses: actions/setup-python@v5
-          
-          - name: Instalação das dependencias
-            run: |            
-              pip install robotframework
-              pip install robotframework-requests
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'   # Versão do Python
 
-          - name: Executando os testes
-            run: |
-              robot --outputdir results/ .
+      - name: Install dependencies
+        run: |
+          pip install robotframework
+          pip install robotframework-seleniumlibrary  # Se usar Selenium
+          # Outras bibliotecas (ex: requests, Appium, etc.)
 
-          - name: Resultado dos Testes
-            uses: actions/upload-artifact@v4
-            if: always()
-            with:
-                name: resultado-testes
-                path: results
+      - name: Run Robot Framework tests
+        run: robot --outputdir results tests/  # Executa testes na pasta 'tests/'
+
+      - name: Upload results (opcional)
+        uses: actions/upload-artifact@v3
+        if: always()  # Faz upload mesmo se os testes falharem
+        with:
+          name: robot-reports
+          path: results/  # Pasta com os relatórios (outputdir)
