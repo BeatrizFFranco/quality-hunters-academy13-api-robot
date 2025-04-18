@@ -29,34 +29,38 @@ jobs:
             with:
                 name: resultado-testes
                 path: results
-                
-    deploy:
-        name: Deploy to GitHub Pages
+
+    report:
+        name: Report Tests 🌐
         runs-on: ubuntu-24.04
         if: always()
         needs: 
           - tests
-
+      
         permissions:
           contents: read
           pages: write
           id-token: write
         environment:
           name: github-pages
-          url: https://beatrizffranco.github.io/quality-hunters-academy13-api-robot
-
+          url: https://beatrizffranco.github.io/quality-hunters-academy13-api-robot/report.html
+  
         steps:
-          - name: Setup Pages
+          - name: Configuração do Site do Resultado do Testes
             uses: actions/configure-pages@v4
-          - name: Download Artifacts
+  
+          - name: Download Resultado dos Testes
             uses: actions/download-artifact@v4
             with:
               name: resultado-testes
               path: results/
-          - name: Upload Artifact
+  
+          - name: Upload dos Resultados
             uses: actions/upload-pages-artifact@v3
             with:
               path: results/
-          - name: Deploy to Github Pages
+  
+          - name: Subindo Pagina de Resultados dos Testes 🚀
             id: deployment
             uses: actions/deploy-pages@v4
+          
