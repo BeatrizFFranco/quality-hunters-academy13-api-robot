@@ -1,77 +1,65 @@
-name: Robot Framework Tests (Chrome)
-on: [push, pull_request]
+name: Testes Robot com Relatorio
 
-permissions:
-  contents: write
+on: [push, workflow_dispatch]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    tests:
+        name: Testes Robot Framework
+        runs-on: ubuntu-24.04
 
-    steps:
-      - uses: actions/checkout@v4
+        steps:
+          - name: Clonando o projeto para a maquina virtual
+            uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-
-      - name: Install compatible Google Chrome and ChromeDriver
-        run: |
-          echo "Installing compatible version of Google Chrome and ChromeDriver..."
+          - name: Configurando o Python na maquina virtual
+            uses: actions/setup-python@v5
           
-          # Install specific version of Google Chrome that has matching ChromeDriver
-          CHROME_VERSION="114.0.5735.198"
-          wget -q -O google-chrome-stable_current_amd64.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}-1_amd64.deb"
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
-          rm google-chrome-stable_current_amd64.deb
-          echo "Installed Google Chrome version: $(google-chrome --version)"
-          
-          # Install matching ChromeDriver version
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_114")
-          wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip -o chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
-          rm chromedriver_linux64.zip
-          echo "Installed ChromeDriver version: $(chromedriver --version)"
+          - name: Instalação das dependencias
+            run: |            
+              pip install robotframework
+              pip install robotframework-requests
 
-      - name: Install Python dependencies
-        run: |
-          pip install robotframework selenium>=4.10.0 robotframework-seleniumlibrary
+          - name: Executando os testes
+            run: |
+              robot --outputdir results/ .
 
-      - name: Run Robot Tests
-        run: |
-          robot --variable BROWSER:Chrome --outputdir results/ tests/
+          - name: Resultado dos Testes
+            uses: actions/upload-artifact@v4
+            if: always()
+            with:
+                name: resultado-testes
+                path: results
+                
+    report:
+        name: Report Tests 🌐
+        runs-on: ubuntu-24.04
+        if: always()
+        needs: 
+          - tests
+    
+        permissions:
+          contents: read
+          pages: write
+          id-token: write
+        environment:
+          name: github-pages
+          url: https://github.com/BeatrizFFranco/quality-hunters-academy13-api-robot/report.
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: robot-reports
-          path: results/
+        steps:
+          - name: Configuração do Site do Resultado do Testes
+            uses: actions/configure-pages@v4
 
-      - name: Generate and Upload Report
-        run: |
-          # Generate detailed reports
-          robot --report report.html --log log.html --output output.xml --outputdir results/ tests/
-          
-          # Configure git
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          
-          # Clone repository and update reports
-          git clone https://github.com/BeatrizFFranco/quality-hunters-academy13-api-robot.git
-          cd quality-hunters-academy13-api-robot
-          git checkout main
-          mkdir -p .github/workflows/reports
-          cp ../results/report.html .github/workflows/reports/
-          cp ../results/log.html .github/workflows/reports/
-          cp ../results/output.xml .github/workflows/reports/
-          git add .github/workflows/reports/
-          git commit -m "Update test reports [skip ci]"
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/BeatrizFFranco/quality-hunters-academy13-api-robot.git main
+          - name: Download Resultado dos Testes
+            uses: actions/download-artifact@v4
+            with:
+              name: resultado-testes
+              path: results/
+
+          - name: Upload dos Resultados
+            uses: actions/upload-pages-artifact@v3
+            with:
+              path: results/
+
+          - name: Subindo Pagina de Resultados dos Testes 🚀
+            id: deployment
+            uses: actions/deploy-pages@v4
