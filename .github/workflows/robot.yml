@@ -43,7 +43,7 @@ jobs:
           id-token: write
         environment:
           name: github-pages
-          url: https://BeatrizFFranco.github.io/quality-hunters-academy13-api-robot/log/report.html
+          url: https://github.com/BeatrizFFranco/quality-hunters-academy13-api-robot.git/report.html
 
         steps:
           - name: Configuração do Site do Resultado do Testes
