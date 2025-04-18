@@ -36,14 +36,14 @@ jobs:
         if: always()
         needs: 
           - tests
-          
+
         permissions:
           contents: read
           pages: write
           id-token: write
         environment:
           name: github-pages
-          url: https://beatrizffranco.github.io/quality-hunters-academy13-api-robot/report.html
+          url: https://beatrizffranco.github.io/quality-hunters-academy13-api-robot
 
         steps:
           - name: Setup Pages
