@@ -1,6 +1,9 @@
 name: Robot Framework Tests (Chrome)
 on: [push, pull_request]
 
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,41 +14,32 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip
 
-      - name: Install Google Chrome
+      - name: Install compatible Google Chrome and ChromeDriver
         run: |
-          echo "Instalando Google Chrome..."
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          echo "Versão do Chrome: $(google-chrome --version)"
-
-      - name: Install ChromeDriver
-        run: |
-          echo "Obtendo versão do Chrome..."
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          echo "Versão do Chrome: $CHROME_VERSION"
+          echo "Installing compatible version of Google Chrome and ChromeDriver..."
           
-          echo "Baixando ChromeDriver correspondente..."
-          CHROME_MAJOR_VERSION=${CHROME_VERSION%%.*}
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION")
-          echo "Versão do ChromeDriver: $CHROMEDRIVER_VERSION"
+          # Install specific version of Google Chrome that has matching ChromeDriver
+          CHROME_VERSION="114.0.5735.198"
+          wget -q -O google-chrome-stable_current_amd64.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}-1_amd64.deb"
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
+          rm google-chrome-stable_current_amd64.deb
+          echo "Installed Google Chrome version: $(google-chrome --version)"
           
-          wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+          # Install matching ChromeDriver version
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_114")
+          wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
           unzip -o chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
           rm chromedriver_linux64.zip
-          
-          echo "Verificando instalação..."
-          chromedriver --version
+          echo "Installed ChromeDriver version: $(chromedriver --version)"
 
       - name: Install Python dependencies
         run: |
@@ -63,23 +57,21 @@ jobs:
 
       - name: Generate and Upload Report
         run: |
-          # Instala as dependências para o relatório
-          pip install robotframework-robocop robotframework-tidy
-          
-          # Gera relatório completo
+          # Generate detailed reports
           robot --report report.html --log log.html --output output.xml --outputdir results/ tests/
           
-          # Configura o git
+          # Configure git
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-          # Faz commit e push do relatório
+          # Clone repository and update reports
           git clone https://github.com/BeatrizFFranco/quality-hunters-academy13-api-robot.git
           cd quality-hunters-academy13-api-robot
           git checkout main
-          cp ../results/report.html .github/workflows/
-          cp ../results/log.html .github/workflows/
-          cp ../results/output.xml .github/workflows/
-          git add .github/workflows/report.html .github/workflows/log.html .github/workflows/output.xml
-          git commit -m "Atualiza relatórios de teste [skip ci]"
+          mkdir -p .github/workflows/reports
+          cp ../results/report.html .github/workflows/reports/
+          cp ../results/log.html .github/workflows/reports/
+          cp ../results/output.xml .github/workflows/reports/
+          git add .github/workflows/reports/
+          git commit -m "Update test reports [skip ci]"
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/BeatrizFFranco/quality-hunters-academy13-api-robot.git main
