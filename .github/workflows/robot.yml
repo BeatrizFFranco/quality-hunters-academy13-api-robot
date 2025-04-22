@@ -13,6 +13,8 @@ jobs:
 
           - name: Configurando o Python na maquina virtual
             uses: actions/setup-python@v5
+            with:
+              python-version: "3.11"
           
           - name: Instalação das dependencias
             run: |            
