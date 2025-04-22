@@ -39,10 +39,10 @@ Cenarios_Diretoria.robot
 4. Abra o terminal do VsCode
 
 5. Ative o ambiente virtual no terminal
-source myrobotenv/bin/activate
+source myrobotvenv/bin/activate
 
 6. Escreva o comando abaixo para rodar os testes
-robot -d log .
+robot Cenarios_Diretoria.robot
 
 
 ## 👥 Squad
