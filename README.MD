@@ -15,7 +15,7 @@ Este projeto consiste em uma **coleção de testes de API** desenvolvidos utiliz
 - **GitHub Actions**.
 - **Relatórios**: Os resultados das execuções dos testes são disponibilizados no **GitHub Pages**, através do link: 
     [report.html](https://beatrizffranco.github.io/quality-hunters-academy13-api-robot/report.html)
-    
+
 ## 🔧 Pré-requisitos
 
 Antes de executar os testes, certifique-se de que você tem os seguintes requisitos instalados:
@@ -59,8 +59,8 @@ robot Cenarios_Diretoria.robot
 
 ## 👨‍💻 Equipe
 - [Andreza Menezes Veloso Pipolo](https://github.com/andrezapipolo)
-- [Beatriz Ferreira Franco] (https://github.com/BeatrizFFranco)
+- [Beatriz Ferreira Franco](https://github.com/BeatrizFFranco)
 - [Fernanda Ferreira dos Santos] 
-- [Luciene Lima Watzel] (https://github.com/Luciene-Watzel)
-- [Paulo Gustavo de Andrade Porcaro] (https://github.com/pgporcaro)
-- [Rodrigo Pereira Ramos Cabral] (https://github.com/ro85pereira)
+- [Luciene Lima Watzel](https://github.com/Luciene-Watzel)
+- [Paulo Gustavo de Andrade Porcaro](https://github.com/pgporcaro)
+- [Rodrigo Pereira Ramos Cabral](https://github.com/ro85pereira)
