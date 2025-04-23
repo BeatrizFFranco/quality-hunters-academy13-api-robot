@@ -55,7 +55,7 @@ robot Cenarios_Diretoria.robot
 - Nara Cyntia
 
 ## 👑 Líder
-- Raphaela Teada
+- [Raphaela Teada](https://github.com/Rapha3la)
 
 ## 👨‍💻 Equipe
 - [Andreza Menezes Veloso Pipolo](https://github.com/andrezapipolo)
