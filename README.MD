@@ -11,9 +11,11 @@ Este projeto consiste em uma **coleção de testes de API** desenvolvidos utiliz
 - **API alvo**: Os testes são realizados na API da aplicação web **QA.Coders**.
 - **Ferramenta utilizada**: O **Robot Framework** é utilizado para a execução dos testes.
 - **Linguagem de teste**: Os testes são escritos em **JavaScript Syntax** e **Python**.
-- **Integração contínua (CI/CD)**: Os testes são executados em uma pipeline de CI/CD utilizando **GitHub Actions**.
+- **Integração contínua (CI/CD)**: Os testes são executados em uma pipeline de CI/CD utilizando 
+- **GitHub Actions**.
 - **Relatórios**: Os resultados das execuções dos testes são disponibilizados no **GitHub Pages**, através do link: 
-
+    [report.html](https://beatrizffranco.github.io/quality-hunters-academy13-api-robot/report.html)
+    
 ## 🔧 Pré-requisitos
 
 Antes de executar os testes, certifique-se de que você tem os seguintes requisitos instalados:
@@ -56,9 +58,9 @@ robot Cenarios_Diretoria.robot
 - Raphaela Teada
 
 ## 👨‍💻 Equipe
-- Andreza Menezes Veloso Pipolo
-- Beatriz Franco 
-- Fernanda Ferreira dos Santos
-- Luciene Lima Watzel
-- Paulo Gustavo de Andrade Porcaro
-- Rodrigo Pereira Ramos Cabral
+- [Andreza Menezes Veloso Pipolo](https://github.com/andrezapipolo)
+- [Beatriz Ferreira Franco] (https://github.com/BeatrizFFranco)
+- [Fernanda Ferreira dos Santos] 
+- [Luciene Lima Watzel] (https://github.com/Luciene-Watzel)
+- [Paulo Gustavo de Andrade Porcaro] (https://github.com/pgporcaro)
+- [Rodrigo Pereira Ramos Cabral] (https://github.com/ro85pereira)
