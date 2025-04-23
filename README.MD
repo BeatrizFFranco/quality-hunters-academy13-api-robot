@@ -60,7 +60,7 @@ robot Cenarios_Diretoria.robot
 ## 👨‍💻 Equipe
 - [Andreza Menezes Veloso Pipolo](https://github.com/andrezapipolo)
 - [Beatriz Ferreira Franco](https://github.com/BeatrizFFranco)
-- [Fernanda Ferreira dos Santos] 
+- [Fernanda Ferreira dos Santos](https://github.com/20220512)
 - [Luciene Lima Watzel](https://github.com/Luciene-Watzel)
 - [Paulo Gustavo de Andrade Porcaro](https://github.com/pgporcaro)
 - [Rodrigo Pereira Ramos Cabral](https://github.com/ro85pereira)
