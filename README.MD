@@ -51,8 +51,8 @@ robot Cenarios_Diretoria.robot
 - Quality Hunters
 
 ## 👩‍💻 Tech Lead
-- Cleberson Osório
-- Nara Cyntia
+- [Cleberson Osório](https://github.com/clestonv)
+- [Nara Cyntia](https://github.com/naracyntia)
 
 ## 👑 Líder
 - [Raphaela Teada](https://github.com/Rapha3la)
